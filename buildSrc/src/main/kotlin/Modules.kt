@@ -1,6 +1,6 @@
 object Modules {
 
-  object KPTR {
+  object TASKMASTER {
     const val domain = ":domain"
 
     object Data {

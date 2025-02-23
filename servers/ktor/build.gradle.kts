@@ -5,15 +5,18 @@ plugins {
   application
   id(Plugins.fatJarPlugin).version(Plugins.fatJarPluginVersion)
   id(Plugins.kotlinKapt)
+
+
+
 }
 
 val env = project.properties["env"] as String? ?: "dev"
 
 dependencies {
-  implementation(project(Modules.KPTR.domain))
-  implementation(project(Modules.KPTR.Data.psql))
-  implementation(project(Modules.KPTR.Api.service))
-  implementation(project(Modules.KPTR.Api.models))
+  implementation(project(Modules.TASKMASTER.domain))
+  implementation(project(Modules.TASKMASTER.Data.psql))
+  implementation(project(Modules.TASKMASTER.Api.service))
+  implementation(project(Modules.TASKMASTER.Api.models))
   implementation(project(Modules.Servers.commons))
   implementation(project(Modules.Servers.client))
 
@@ -85,5 +88,5 @@ tasks {
 }
 
 application {
-  mainClass.set("in.porter.kptr.servers.ktor.app.MainRunnerKt")
+  mainClass.set("in.porter.taskmaster.servers.ktor.app.MainRunnerKt")
 }
