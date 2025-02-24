@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
   implementation(Libs.KotlinUtils.serdeJackson)
+    implementation(project(Modules.TASKMASTER.domain))
+
 }
 
 val sourceJar = task("sourceJar", Jar::class) {

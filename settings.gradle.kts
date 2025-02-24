@@ -1,13 +1,34 @@
 rootProject.name = "taskmaster"
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
+//pluginManagement {
+//    repositories {
+//        gradlePluginPortal()
+//        mavenCentral()
+//    }
+//}
 
+//pluginManagement {
+//    repositories {
+//        mavenCentral()
+//        gradlePluginPortal()
+//    }
+//}
+//plugins {
+//    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
+//}
+//plugins {
+//    id("org.gradle.kotlin.kotlin-dsl") version "3.0.11"
+//}
+//pluginManagement {
+//    repositories {
+//        gradlePluginPortal()
+//        mavenCentral()
+//        //maven { url = uri("https://plugins.gradle.org/m2/") } // Ensure Gradle Plugin Portal is included
+//    }
+//}
 plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
 }
+//include(":data")
 
 include(":domain")
 project(":domain").projectDir = File("products/product1/domain")

@@ -6,12 +6,27 @@ plugins {
 }
 
 dependencies {
+//implementation(project(":api-models"))
   implementation(project(Modules.TASKMASTER.domain))
   implementation(Libs.KotlinUtils.openTracing)
   implementation(Libs.KotlinUtils.exposed)
   implementation(Libs.Micrometer.core)
   implementation(Libs.Dagger.dagger)
   kapt(Libs.Dagger.compiler)
-
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
+
+//
+//plugins {
+//    id(Plugins.kotlinKapt)
+//}
+//dependencies {
+//    implementation(project(Modules.TASKMASTER.domain))
+//    implementation(Libs.KotlinUtils.openTracing)
+//    implementation(Libs.KotlinUtils.exposed)
+//
+//
+//    implementation(Libs.Micrometer.core)
+//    implementation(Libs.Dagger.dagger)
+//    kapt(Libs.Dagger.compiler)
+//}

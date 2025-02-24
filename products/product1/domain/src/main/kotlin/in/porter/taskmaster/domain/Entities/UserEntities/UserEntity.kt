@@ -1,10 +1,10 @@
-package `in`.porter.taskmaster.data.Entities.UserEntities
+package `in`.porter.taskmaster.domain.Entities
 
 import org.jetbrains.exposed.sql.Table
 
 object UserEntity {
     object users : Table("users") {
-        val uid = integer("userid") // Manually entered
+        val uid = integer("uid") // Manually entered
         val username = varchar("username", length = 100)
         val password = varchar("password", length = 255)
 

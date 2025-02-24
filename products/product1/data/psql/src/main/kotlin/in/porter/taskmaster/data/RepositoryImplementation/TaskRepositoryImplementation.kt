@@ -1,14 +1,23 @@
-package `in`.porter.taskmaster.domain
+package `in`.porter.taskmaster.data.RepositoryImplementation
+
+import `in`.porter.taskmaster.api.models.mappers.TaskMapperActions
+import `in`.porter.taskmaster.data.DatabaseRepository.TaskDbActions
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.slf4j.LoggerFactory
+import javax.inject.Inject
 import `in`.porter.taskmaster.data.DatabaseRepository.UserDbActions
 import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskRequest
-import `in`.porter.taskmaster.data.RedisRepository.UserRedisActions
-import javax.inject.Inject
+import `in`.porter.taskmaster.data.Entities.TaskEntities.UpdateTaskStatusRequest
+import `in`.porter.taskmaster.data.RedisRepository.TaskRedisActions
+import `in`.porter.taskmaster.domain.Entities.TaskRequest
+import `in`.porter.taskmaster.domain.actions.TaskActions
 
-class TaskService @Inject constructor(
-    private val redisCache: UserRedisActions,
+class TaskRepositoryImplementation @Inject constructor(
+    private val redisCache: TaskRedisActions,
     private val taskDb: TaskDbActions,
     private val userDb: UserDbActions,
-    private val taskMapper:TaskMapperInterface
+    private val taskMapper:TaskMapperActions
 ) : TaskActions {
 
     override suspend fun getTasks(userid: Int): List<TaskRequest> {
@@ -48,7 +57,9 @@ class TaskService @Inject constructor(
         }
     }
 
-    override suspend fun updateTask(request: UpdateTaskStatusRequest): Boolean {
+
+
+    override suspend fun updateTaskStatus(request: UpdateTaskStatusRequest): Boolean {
         return try {
             redisCache.deleteTaskData(request.getUserId(), request.getTaskId())
             val isUpdatedInDb = taskDb.updateTaskStatus(request)

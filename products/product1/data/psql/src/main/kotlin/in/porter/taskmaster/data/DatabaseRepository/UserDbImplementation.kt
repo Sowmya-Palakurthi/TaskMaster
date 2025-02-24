@@ -4,9 +4,13 @@ package `in`.porter.taskmaster.data.DatabaseRepository
 
 import `in`.porter.taskmaster.data.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.data.Entities.UserEntities.UserEntity
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserEntity.users.userid
+import `in`.porter.taskmaster.data.Entities.UserEntities.UserEntity.users.uid
 import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.data.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.Entities.UserEntity.users.password
+import `in`.porter.taskmaster.domain.Entities.UserEntity.users.uid
+import `in`.porter.taskmaster.domain.Entities.UserEntity.users.username
+import `in`.porter.taskmaster.domain.Entities.UserRequest
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -55,7 +59,7 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun updatePasswordInDb(request: UpdatePasswordRequest): Boolean {
         return transaction {
-            val updatedRows = userObj.update({ userObj.userid eq request.getUserId() and (userObj.password eq request.getCurrentPassword()) }) {
+            val updatedRows = userObj.update({ userObj.uid eq request.getUserId() and (userObj.password eq request.getCurrentPassword()) }) {
                 it[password] = request.getNewPassword()
             }
             updatedRows > 0
@@ -64,7 +68,7 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun isPasswordValidForUser(userId: Int, password: String): Boolean {
         return transaction {
-            userObj.select { userObj.userid eq userId and (userObj.password eq password) }
+            userObj.select { userObj.uid eq userId and (userObj.password eq password) }
                 .count() > 0
         }
     }

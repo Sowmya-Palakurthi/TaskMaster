@@ -10,13 +10,15 @@ plugins {
   id(Plugins.SonarQube.plugin) version (Plugins.SonarQube.version)
 }
 
+
 allprojects {
   apply(plugin = Plugins.Detekt.detektLib)
   apply(plugin = Plugins.mavenS3)
 
+
   detekt {
     toolVersion = Plugins.Detekt.version
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.from("$rootDir/config/detekt/detekt.yml")
     buildUponDefaultConfig = false
   }
 
@@ -53,6 +55,7 @@ subprojects {
     toolVersion = Plugins.Jacoco.version
   }
 
+
   tasks.withType<Test> {
     @Suppress("UnstableApiUsage")
     useJUnitPlatform()
@@ -66,6 +69,16 @@ subprojects {
       xml.required.set(true)
     }
   }
-
+//  java {
+//    toolchain {
+//      languageVersion.set(JavaLanguageVersion.of(21))
+//    }
+//  }
+//
+//// Set the Kotlin JVM target for all Kotlin compile tasks
+//  tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+//    kotlinOptions.jvmTarget = "21"
+//  }
   kotlinExtension.jvmToolchain(11)
 }
+

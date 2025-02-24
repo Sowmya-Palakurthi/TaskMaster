@@ -1,69 +1,50 @@
 package `in`.porter.taskmaster.api.models.mappers
 
 
-import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskRequest
-import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskResponse
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import `in`.porter.taskmaster.domain.Entities.TaskRequest
+import `in`.porter.taskmaster.domain.Entities.TaskResponse
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 
-class TaskMapperService @Inject constructor() : TaskMapperActions {
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+
+
+
+class TaskMapperService @Inject constructor() : TaskMapperActions {
 
     override fun taskResponseToRequest(response: TaskResponse): TaskRequest {
-        val currentDate = LocalDate.now()
-        val deadlineDate = currentDate.plusDays(response.getDeadline()) // Convert days left to actual date
+
+        val currentInstant = Instant.now() // Get the current timestamp
+        val duration = Duration.between(response.getDeadline(), currentInstant)
+        val differenceInDays = duration.toDays()
+
 
         return TaskRequest(
-            uuid = response.getTaskId(),
-            uid = response.getUserId(),
+            uuid = response.getTaskId(), // Changed from taskid to uuid
+            uid = response.getUserId(),  // Changed from userid to uid
             title = response.getTitle(),
-
             description = response.getDescription(),
             isdone = response.getIsDone(),
-            deadline = deadlineDate.toString() // Convert LocalDate to formatted string
+            deadline = differenceInDays // Now using Instant directly
         )
     }
 
     override fun taskRequestToResponse(request: TaskRequest): TaskResponse {
-        // Parse the deadline string into LocalDate
-        val parsedDeadlineDate = try {
-            LocalDate.parse(request.getDeadline(), dateFormatter)
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Invalid date format: '${request.getDeadline()}'. Expected format: dd-MM-yyyy")
-        }
-        val currentDate = LocalDate.now()
-        val daysUntilDeadline = ChronoUnit.DAYS.between(currentDate, parsedDeadlineDate) // Convert date to days left
 
+        val secondsToAdd: Long = 86400 // Example: Add 1 day (86400 seconds)
+
+        val currentInstant = Instant.now()
+        val newInstant = currentInstant.plusSeconds(secondsToAdd) // Add seconds to current time
         return TaskResponse(
-            taskid = request.getTaskId(),
-            userid = request.getUserId(),
+            uuid = request.getTaskId(),  // Changed from taskid to uuid
+            uid = request.getUserId(),   // Changed from userid to uid
             title = request.getTitle(),
             description = request.getDescription(),
             isdone = request.getIsDone(),
-            deadline = daysUntilDeadline // Store remaining days as Long
+            deadline = newInstant // Now using Instant directly
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

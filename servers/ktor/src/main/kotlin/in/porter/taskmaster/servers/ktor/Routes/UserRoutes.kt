@@ -2,7 +2,7 @@ package `in`.porter.taskmaster.servers.ktor.Routes
 
 import `in`.porter.taskmaster.data.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.domain.Repository.UserActions
+import `in`.porter.taskmaster.domain.exceptions.UserActions
 import `in`.porter.taskmaster.domain.exceptions.MissingEmailIdException
 import io.ktor.http.*
 import io.ktor.server.application.*

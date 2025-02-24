@@ -1,11 +1,12 @@
 package `in`.porter.taskmaster.api.models.mappers
 
-import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskRequest
-import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskResponse
+import `in`.porter.taskmaster.domain.Entities.TaskRequest
+import `in`.porter.taskmaster.domain.Entities.TaskResponse
+
 
 interface TaskMapperActions {
 
-    fun taskRequestToResponse(request:TaskRequest):TaskResponse
-    fun taskResponseToRequest(response:TaskResponse): TaskRequest
+    fun taskRequestToResponse(request: TaskRequest):TaskResponse
+    fun taskResponseToRequest(response: TaskResponse): TaskRequest
 
 }

@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.data.Entities.UserEntities
+package `in`.porter.taskmaster.servers.commons.Entities.UserEntities
 import kotlinx.serialization.Serializable
 
 
@@ -8,7 +8,7 @@ data class UserResponse(
     private var username: String
 ) {
     fun getUserId(): Int = uid
-    fun setUserId(userid: Int) { this.uid = userid }
+    fun setUserId(userid: Int) { this.uid = uid }
     fun getUsername(): String = username
     fun setUsername(username: String) { this.username = username }
 }

@@ -1,6 +1,7 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
-import `in`.porter.taskmaster.domain.Repository.UserActions
+import com.apple.eawt.Application
+import `in`.porter.taskmaster.domain.exceptions.UserActions
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import java.security.Security
@@ -8,6 +9,6 @@ import java.security.Security
 fun Application.configureRouting(userService: UserActions, security: Security) {
     routing {
         userRoutes(userService)
-        //TaskRoutes(taskService, taskMapper,security )
+        TaskRoutes(taskService, taskMapper,security )
     }
 }

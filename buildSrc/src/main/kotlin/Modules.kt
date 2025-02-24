@@ -1,11 +1,11 @@
 object Modules {
 
   object TASKMASTER {
+
     const val domain = ":domain"
 
     object Data {
       private const val data = ":data"
-
       const val psql = "$data-psql"
     }
 

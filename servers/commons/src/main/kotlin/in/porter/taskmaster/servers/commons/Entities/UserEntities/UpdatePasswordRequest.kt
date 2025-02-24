@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.data.Entities.UserEntities
+package `in`.porter.taskmaster.servers.commons.Entities.UserEntities
 import kotlinx.serialization.Serializable
 
 @Serializable
