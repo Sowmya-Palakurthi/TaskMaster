@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.api.models.mappers
+package `in`.porter.taskmaster.api.service.mappers
 
 class UserMapperActions {
 }

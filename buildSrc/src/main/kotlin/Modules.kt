@@ -5,7 +5,6 @@ object Modules {
 
     object Data {
       private const val data = ":data"
-
       const val psql = "$data-psql"
     }
 

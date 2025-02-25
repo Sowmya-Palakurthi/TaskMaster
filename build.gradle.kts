@@ -14,11 +14,18 @@ allprojects {
   apply(plugin = Plugins.Detekt.detektLib)
   apply(plugin = Plugins.mavenS3)
 
+//  detekt {
+//    toolVersion = Plugins.Detekt.version
+//    config = files("$rootDir/config/detekt/detekt.yml")
+//    buildUponDefaultConfig = false
+//  }
   detekt {
     toolVersion = Plugins.Detekt.version
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml")) // Updated line
     buildUponDefaultConfig = false
   }
+
+
 
   repositories {
     mavenCentral()

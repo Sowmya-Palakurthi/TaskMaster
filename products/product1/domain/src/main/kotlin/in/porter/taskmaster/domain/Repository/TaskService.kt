@@ -1,6 +1,8 @@
 package `in`.porter.taskmaster.domain
+import `in`.porter.taskmaster.data.DatabaseRepository.TaskDbActions
 import `in`.porter.taskmaster.data.DatabaseRepository.UserDbActions
 import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskRequest
+import `in`.porter.taskmaster.data.Entities.TaskEntities.UpdateTaskStatusRequest
 import `in`.porter.taskmaster.data.RedisRepository.UserRedisActions
 import javax.inject.Inject
 
@@ -11,14 +13,14 @@ class TaskService @Inject constructor(
     private val taskMapper:TaskMapperInterface
 ) : TaskActions {
 
-    override suspend fun getTasks(userid: Int): List<TaskRequest> {
+    override suspend fun getTasks(uid: Int): List<TaskRequest> {
 
         return try {
-            val cachedTasks = redisCache.getTaskData(userid)
+            val cachedTasks = redisCache.getTaskData(uid)
             if (cachedTasks != null) {
                 cachedTasks
             } else {
-                val tasksList = taskDb.getTasksFromDb(userid)
+                val tasksList = taskDb.getTasksFromDb(uid)
                 if (tasksList.isNotEmpty()) {
                     tasksList.forEach { task -> redisCache.addTaskData(task) }
                 }

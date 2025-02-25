@@ -1,9 +1,21 @@
 plugins {
   id(Plugins.mavenPublish)
+
+
 }
 
 dependencies {
   implementation(Libs.KotlinUtils.serdeJackson)
+//
+//
+//    implementation(project(Modules.TASKMASTER.domain))
+//    implementation(project(Modules.TASKMASTER.Data.psql))
+
+
+
+ // implementation(project(Modules.TASKMASTER.Api.service))
+  //implementation(project(Modules.TASKMASTER.Data.psql))
+
 }
 
 val sourceJar = task("sourceJar", Jar::class) {

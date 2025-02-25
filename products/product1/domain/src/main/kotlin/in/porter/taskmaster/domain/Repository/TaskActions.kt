@@ -5,10 +5,10 @@ import `in`.porter.taskmaster.data.Entities.TaskEntities.UpdateTaskStatusRequest
 
 
 interface TaskActions {
-    suspend fun getTasks(userid:Int): List<TaskRequest>
+    suspend fun getTasks(uid:Int): List<TaskRequest>
     suspend fun addTask(request:TaskRequest): Boolean
     suspend fun updateTask(request: UpdateTaskStatusRequest): Boolean
-    suspend fun deleteTask(userid:Int, taskid:Int,password:String): Boolean
+    suspend fun deleteTask(uid:Int, uuid:Int,password:String): Boolean
 
 }
 
