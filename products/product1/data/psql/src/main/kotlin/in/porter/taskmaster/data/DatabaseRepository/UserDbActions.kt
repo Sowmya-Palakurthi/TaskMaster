@@ -1,8 +1,8 @@
 package `in`.porter.taskmaster.data.DatabaseRepository
 
-import `in`.porter.taskmaster.data.Entities.UserEntities.UpdatePasswordRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
 
 
 interface UserDbActions {

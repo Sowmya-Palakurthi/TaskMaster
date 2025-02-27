@@ -1,13 +1,14 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
-import `in`.porter.taskmaster.domain.Repository.UserActions
+import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
+import `in`.porter.taskmaster.domain.TaskRepositoryActions
+import `in`.porter.taskmaster.domain.UserRepositoryActions
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import java.security.Security
 
-fun Application.configureRouting(userService: UserActions, security: Security) {
+fun Application.configureRouting(userService: UserRepositoryActions, taskService:TaskRepositoryActions, TaskMapper: TaskMapperActions) {
     routing {
         userRoutes(userService)
-        //TaskRoutes(taskService, taskMapper,security )
+        TaskRoutes(taskService, TaskMapper )
     }
 }

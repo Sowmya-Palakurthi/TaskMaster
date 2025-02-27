@@ -19,16 +19,20 @@ dependencies {
   implementation(project(Modules.TASKMASTER.Api.models))
   implementation(project(Modules.Servers.commons))
   implementation(project(Modules.Servers.client))
-
-
+  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5") // Update to latest version
+  implementation("io.ktor:ktor-server-content-negotiation:2.3.5") // Required for negotiation
   implementation(Libs.KotlinUtils.serdeJackson)
   implementation(Libs.KotlinUtils.sentryKtorFeature)
   implementation(Libs.KotlinUtils.ktorWebServer)
+  implementation("com.google.dagger:dagger:2.50") // Use the latest version
+  kapt("com.google.dagger:dagger-compiler:2.50")
+
+
+    implementation("redis.clients:jedis:5.1.0") // Use the latest version if available
 
 
   implementation(Libs.Log4j.core)
   implementation(Libs.Log4j.slf4jImpl)
-
   implementation(Libs.Ktor.serverCore)
   implementation(Libs.Ktor.serverNetty)
   implementation(Libs.Ktor.serverJackson)

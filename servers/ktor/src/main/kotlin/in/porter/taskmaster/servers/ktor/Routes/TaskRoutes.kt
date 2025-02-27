@@ -1,19 +1,19 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
-import `in`.porter.taskmaster.api.models.mappers.TaskMapper
-import `in`.porter.taskmaster.domain.TaskActions
-import `in`.porter.taskmaster.domain.TaskEntities.TaskResponse
+import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusRequest
+
+import `in`.porter.taskmaster.domain.TaskRepositoryActions
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
+
 import io.ktor.server.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.request.*
-import java.security.Security
 
-fun Route.TaskRoutes(taskService: TaskActions, taskMapper: TaskMapper, security: Security) {
+fun Route.TaskRoutes(taskService: TaskRepositoryActions, taskMapper: TaskMapperActions) {
 
     route("/tasks") {
         get("/"){
@@ -40,7 +40,7 @@ fun Route.TaskRoutes(taskService: TaskActions, taskMapper: TaskMapper, security:
         post("/add") {
             try {
                 val taskResponse = call.receive<TaskResponse>()
-                val isAdded = taskService.addTask(taskMapper.responseToRequest(taskResponse))
+                val isAdded = taskService.addTask(taskMapper.taskResponseToRequest(taskResponse))
                 if (isAdded) {
                     call.respond(HttpStatusCode.Created, "Task added successfully.")
                 } else {

@@ -2,13 +2,12 @@ package `in`.porter.taskmaster.data.DatabaseRepository
 
 
 
-import `in`.porter.taskmaster.data.Entities.UserEntities.UpdatePasswordRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserEntity
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserEntity.users.uid
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity.users.uid
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import javax.inject.Inject
 
@@ -33,9 +32,9 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
         return transaction {
             userObj.insert {
-                it[uid] = request.getUserId()
-                it[username] = request.getUsername()
-                it[password] = request.getPassword()
+                it[uid] = request.uid
+                it[username] = request.username
+                it[password] = request.password
             }
             true
         }
@@ -55,8 +54,8 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun updatePasswordInDb(request: UpdatePasswordRequest): Boolean {
         return transaction {
-            val updatedRows = userObj.update({ userObj.uid eq request.getUserId() and (userObj.password eq request.getCurrentPassword()) }) {
-                it[password] = request.getNewPassword()
+            val updatedRows = userObj.update({ userObj.uid eq request.uid and (userObj.password eq request.currentPassword) }) {
+                it[password] = request.newPassword
             }
             updatedRows > 0
         }

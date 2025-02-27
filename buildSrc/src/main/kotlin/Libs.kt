@@ -17,6 +17,12 @@ object Libs {
     const val geos = "$group:geos:$version"
     const val ktorWebClient = "$group:webclient-ktor-features:$version"
   }
+  object Redis {
+    private const val group = "redis.clients"
+    private const val version = "5.1.0" // Use the latest version
+
+    const val jedis = "$group:jedis:$version"
+  }
 
   object Dagger {
     private const val group = "com.google.dagger"

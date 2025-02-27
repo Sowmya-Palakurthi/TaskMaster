@@ -15,9 +15,11 @@ dependencies {
   api(project(Modules.TASKMASTER.Api.models))
   implementation(Libs.KotlinUtils.serdeJackson)
   implementation(Libs.KotlinUtils.awsSqs)
-  implementation("redis.clients:jedis:5.0.0")
+ // implementation("redis.clients:jedis:5.0.0")
+  implementation(Libs.Redis.jedis)
   implementation(Libs.Dagger.dagger)
   kapt(Libs.Dagger.compiler)
+  implementation("redis.clients:jedis:5.1.0")
 
 }
 val sourceJar = task("sourceJar", Jar::class) {

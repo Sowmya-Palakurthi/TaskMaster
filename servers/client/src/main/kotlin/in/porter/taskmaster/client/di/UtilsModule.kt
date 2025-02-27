@@ -9,6 +9,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import dagger.Module
 import dagger.Provides
 import software.amazon.awssdk.services.sqs.SqsAsyncClient
+import redis.clients.jedis.Jedis
 
 @Module
 internal class UtilsModule {

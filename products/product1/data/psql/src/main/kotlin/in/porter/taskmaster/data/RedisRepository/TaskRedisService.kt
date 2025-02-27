@@ -1,4 +1,68 @@
 package `in`.porter.taskmaster.data.RedisRepository
 
-class TaskRedisService {
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity.tasks.uuid
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity.users.uid
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import javax.inject.Inject
+import redis.clients.jedis.Jedis
+
+
+class TaskRedisService @Inject constructor(private val jedis: Jedis): TaskRedisActions {
+
+
+
+    override fun getTaskData(userId: Int): List<TaskResponse> {
+        return try {
+            val taskIds = jedis.smembers("tasks:set:$uid")
+            taskIds.mapNotNull {
+                jedis.get("task:$uid:$uuid")?.let { Json.decodeFromString<TaskResponse>(it) }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList<TaskResponse>()
+        }
+    }
+
+    override fun deleteTaskData(userId: Int, taskId: Int): Boolean {
+        return try {
+            jedis.del("task:$uid:$uuid")
+            jedis.srem("tasks:set:$uid", uuid.toString())
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    override fun addTaskData(request: TaskResponse): Boolean {
+        return try {
+            val taskJson = Json.encodeToString(request)
+            val userId = request.uid
+            val taskId = request.uuid
+            val keyType = jedis.type("tasks:set:$userId")
+            if (keyType != "set" && keyType != "none") {
+                jedis.del("tasks:set:$userId")
+            }
+            jedis.set("task:$userId:$taskId", taskJson)
+            jedis.sadd("tasks:set:$userId", taskId.toString())
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+
+    override fun setUserData(data: String, time: Long, userId: Int): Boolean {
+        return try {
+            jedis.setex("user:$userId", time, data)
+            true
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            false
+        }
+    }
 }
+

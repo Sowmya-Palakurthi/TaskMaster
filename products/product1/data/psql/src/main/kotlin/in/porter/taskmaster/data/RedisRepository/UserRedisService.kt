@@ -1,35 +1,36 @@
 package `in`.porter.taskmaster.data.RedisRepository
 
-
-import `in`.porter.taskmaster.client.clients.RedisClient.jedis
-import `in`.porter.taskmaster.data.Entities.TaskEntities.TaskRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import redis.clients.jedis.Jedis
 import javax.inject.Inject
 
 
-class UserRedisService @Inject constructor() : UserRedisActions {
+class UserRedisService @Inject constructor( private val jedis:Jedis) : UserRedisActions {
 
-    override fun getUserData(userId: Int): UserResponse? {
+
+
+    override fun getUserData(uid: Int): UserResponse? {
         return try {
-            jedis.get("user:$userId")?.let { Json.decodeFromString<UserResponse>(it) }
+            jedis.get("user:$uid")?.let { Json.decodeFromString<UserResponse>(it) }
         } catch (e: Exception) {
-            println("Error fetching user data from cache for ID $userId: ${e.localizedMessage}")
+            println("Error fetching user data from cache for ID $uid: ${e.localizedMessage}")
             null
         }
     }
 
-    override fun deleteUserData(userId: Int): Boolean {
+    override fun deleteUserData(uid: Int): Boolean {
         return try {
-            val taskIds = jedis.smembers("tasks:set:$userId")
-            taskIds.forEach { jedis.del("task:$userId:$it") }
-            jedis.del("tasks:set:$userId")
-            jedis.del("user:$userId")
+            val taskIds = jedis.smembers("tasks:set:$uid")
+            taskIds.forEach { jedis.del("task:$uid:$it") }
+            jedis.del("tasks:set:$uid")
+            jedis.del("user:$uid")
             true
         } catch (e: Exception) {
-            println("Error deleting  user data from cache for ID $userId: ${e.localizedMessage}")
+            println("Error deleting  user data from cache for ID $uid: ${e.localizedMessage}")
             false
         }
     }
@@ -37,7 +38,7 @@ class UserRedisService @Inject constructor() : UserRedisActions {
     override fun addUserData(request: UserRequest): Boolean {
         return try {
             val userJson = Json.encodeToString(request)
-            jedis.set("user:${request.getUserId()}", userJson)
+            jedis.set("user:${request.uid}", userJson)
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -45,11 +46,11 @@ class UserRedisService @Inject constructor() : UserRedisActions {
         }
     }
 
-    override fun getTaskData(userId: Int): List<TaskRequest>? {
+    override fun getTaskData(uid: Int): List<TaskRequest>? {
         return try {
-            val taskIds = jedis.smembers("tasks:set:$userId")
-            taskIds.mapNotNull { taskId ->
-                jedis.get("task:$userId:$taskId")?.let { Json.decodeFromString<TaskRequest>(it) }
+            val taskIds = jedis.smembers("tasks:set:$uid")
+            taskIds.mapNotNull { uuid ->
+                jedis.get("task:$uid:$uuid")?.let { Json.decodeFromString<TaskRequest>(it) }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -57,10 +58,10 @@ class UserRedisService @Inject constructor() : UserRedisActions {
         }
     }
 
-    override fun deleteTaskData(userId: Int, taskId: Int): Boolean {
+    override fun deleteTaskData(uid: Int, uuid: Int): Boolean {
         return try {
-            jedis.del("task:$userId:$taskId")
-            jedis.srem("tasks:set:$userId", taskId.toString())
+            jedis.del("task:$uid:$uuid")
+            jedis.srem("tasks:set:$uid", uuid.toString())
             true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -71,14 +72,14 @@ class UserRedisService @Inject constructor() : UserRedisActions {
     override fun addTaskData(request: TaskRequest): Boolean {
         return try {
             val taskJson = Json.encodeToString(request)
-            val userId = request.getUserId()
-            val taskId = request.getTaskId()
-            val keyType = jedis.type("tasks:set:$userId")
+            val uid = request.uid
+            val uuid = request.uuid
+            val keyType = jedis.type("tasks:set:$uid")
             if (keyType != "set" && keyType != "none") {
-                jedis.del("tasks:set:$userId")
+                jedis.del("tasks:set:$uid")
             }
-            jedis.set("task:$userId:$taskId", taskJson)
-            jedis.sadd("tasks:set:$userId", taskId.toString())
+            jedis.set("task:$uid:$uuid", taskJson)
+            jedis.sadd("tasks:set:$uid", uuid.toString())
             true
         } catch (e: Exception) {
             e.printStackTrace()

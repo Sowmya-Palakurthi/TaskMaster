@@ -7,6 +7,9 @@ pluginManagement {
 }
 
 plugins {
+//
+//    kotlin("jvm") version Libs.kotlinVersion
+//    kotlin(Plugins.kotlinxSerialization) version Libs.kotlinVersion
 }
 
 include(":domain")

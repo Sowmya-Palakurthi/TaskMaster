@@ -1,8 +1,8 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
-import `in`.porter.taskmaster.data.Entities.UserEntities.UpdatePasswordRequest
-import `in`.porter.taskmaster.data.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.domain.Repository.UserActions
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
+import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
+import `in`.porter.taskmaster.domain.UserRepositoryActions
 import `in`.porter.taskmaster.domain.exceptions.MissingEmailIdException
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,7 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.slf4j.LoggerFactory
 
-fun Route.userRoutes(userService: UserActions) {
+fun Route.userRoutes(userService: UserRepositoryActions) {
     val logger = LoggerFactory.getLogger("UserRoutes")
 
     route("/users") {
@@ -85,9 +85,9 @@ fun Route.userRoutes(userService: UserActions) {
         put("/update-password") {
             try {
                 val updatePasswordRequest = call.receive<UpdatePasswordRequest>()
-                val userId = updatePasswordRequest.getUserId()
-                val currentPassword = updatePasswordRequest.getCurrentPassword()
-                val newPassword = updatePasswordRequest.getNewPassword()
+                val userId = updatePasswordRequest.uid
+                val currentPassword = updatePasswordRequest.currentPassword
+                val newPassword = updatePasswordRequest.newPassword
 
                 if (userId.toString().isBlank() || currentPassword.isBlank() || newPassword.isBlank()) {
                     call.respond(HttpStatusCode.BadRequest, "All fields are required")
