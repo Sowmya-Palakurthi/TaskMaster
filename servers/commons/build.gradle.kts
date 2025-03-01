@@ -15,7 +15,9 @@
   dependencies {
     implementation(project(Modules.TASKMASTER.domain))
     implementation(project(Modules.TASKMASTER.Data.psql))
-
+//    implementation(project(Modules.TASKMASTER.))
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     implementation(Libs.Log4j.core)
     implementation(Libs.Log4j.slf4jImpl)
     //implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
@@ -44,8 +46,7 @@
 
     implementation(Libs.Dagger.dagger)
     kapt(Libs.Dagger.compiler)
-  implementation("redis.clients:jedis:5.0.0")
-
+    implementation("redis.clients:jedis:5.1.0")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation(project(Modules.TASKMASTER.client))

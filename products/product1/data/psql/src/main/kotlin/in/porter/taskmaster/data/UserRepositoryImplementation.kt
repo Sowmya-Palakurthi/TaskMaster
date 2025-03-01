@@ -2,8 +2,6 @@ package `in`.porter.taskmaster.data
 
 import org.slf4j.LoggerFactory
 import `in`.porter.taskmaster.domain.UserRepositoryActions
-
-
 import `in`.porter.taskmaster.data.DatabaseRepository.UserDbActions
 import `in`.porter.taskmaster.data.RedisRepository.UserRedisActions
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
@@ -44,8 +42,7 @@ class UserRepositoryImplementation @Inject constructor(
             val inserted = userDb.addUserInDb(request)
             if (inserted) {
                 redisCache.addUserData(request)
-            }
-            else{
+            } else {
                 logger.warn("Could not add the user")
             }
             true
@@ -55,8 +52,8 @@ class UserRepositoryImplementation @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(userId: Int,password: String): Boolean {
-        val deleted = userDb.deleteUserFromDb(userId,password)
+    override suspend fun deleteUser(userId: Int, password: String): Boolean {
+        val deleted = userDb.deleteUserFromDb(userId, password)
         if (deleted) redisCache.deleteUserData(userId)
         else logger.warn("Error in deleting the user")
 
@@ -69,11 +66,12 @@ class UserRepositoryImplementation @Inject constructor(
             logger.warn("Error: The credentials provided do not match.")
             return false
         }
-        redisCache.deleteUserData(request.uid)
+        try {
+            redisCache.deleteUserData(request.uid)
+        } catch (exception: Exception) {
+            logger.warn("Error in updating the user")
+        }
         return true
     }
-//
-//    suspend fun isPasswordValidForUser(userId: Int, password: String): Boolean {
-//        return userDb.isPasswordValidForUser(userId, password)
 
 }

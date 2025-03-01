@@ -7,6 +7,5 @@ object ComponentsFactory {
 
   val rootComponent = DaggerRootComponent.create()
   val psqlDataComponent = PsqlDataComponentFactory.build(rootComponent)
-  //val database= PsqlDataComponentFactory.build(database)
 }
 

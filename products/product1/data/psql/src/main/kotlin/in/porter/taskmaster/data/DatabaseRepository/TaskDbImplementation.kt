@@ -5,11 +5,16 @@ import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
 import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
+import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDate as JavaLocalDate
+import java.time.format.DateTimeFormatter
+import kotlinx.datetime.LocalDate as KotlinxLocalDate
 import javax.inject.Inject
 import org.jetbrains.exposed.sql.and
 
@@ -22,12 +27,12 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
         return transaction {
             taskObj.select { taskObj.uid eq userId }.map {
                 TaskResponse(
-                    uuid  = it[taskObj.uuid],
+                    uuid = it[taskObj.uuid],
                     uid = it[taskObj.uid],
                     title = it[taskObj.title],
                     description = it[taskObj.description],
                     isdone = it[taskObj.isdone],
-                    deadline=it[taskObj.deadline]
+                    deadline =it[taskObj.deadline].toKotlinLocalDate()
                 )
             }
         }
@@ -46,32 +51,28 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
                 return@transaction false
             }
 
-//            if (response.getDeadline().) {
-//                println("Error: Deadline should not be negative.")
-//                return@transaction false
-//            }
             taskObj.insert {
                 it[uuid] = request.uuid
                 it[uid] = request.uid
                 it[title] = request.title
                 it[description] = request.description
-                it[deadline] = request.deadline
+                it[deadline] = JavaLocalDate.of(request.deadline.year, request.deadline.monthNumber, request.deadline.dayOfMonth)
                 it[isdone] = request.isdone
             }
             true
         }
     }
 
-
-    override suspend fun deleteTaskFromDb(userId: Int, password: String, taskId: Int): Boolean {
+    override suspend fun deleteTaskFromDb(deleteTaskRequest: DeleteTaskRequest): Boolean {
         return transaction {
+
             val isValidPassword = userObj
-                .select { userObj.uid eq userId and (userObj.password eq password) }
+                .select { userObj.uid eq deleteTaskRequest.uid and (userObj.password eq deleteTaskRequest.password) }
                 .count() > 0
 
             if (isValidPassword) {
                 val deletedRows = taskObj.deleteWhere {
-                    (taskObj.uid eq userId) and (taskObj.uuid eq taskId)
+                    (taskObj.uid eq deleteTaskRequest.uid) and (taskObj.uuid eq deleteTaskRequest.uuid)
                 }
                 deletedRows > 0
             } else {
@@ -85,6 +86,7 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
         return transaction {
             val updatedRows = taskObj.update({
                 (taskObj.uid eq request.uid) and (taskObj.uuid eq request.uuid)
+
             }) {
                 it[isdone] = request.isdone
             }

@@ -54,6 +54,7 @@ fun bindTaskRedisService(redisImplementation: TaskRedisService): TaskRedisAction
     @Binds
     @Singleton
     fun bindUserMapperService(userMapper: UserMapperService): UserMapperActions
+
 }
 
 

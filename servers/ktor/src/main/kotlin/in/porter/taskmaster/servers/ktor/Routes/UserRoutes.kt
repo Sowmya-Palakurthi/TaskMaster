@@ -1,5 +1,6 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
+import `in`.porter.taskmaster.domain.Entities.UserEntities.DeleteUserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.UserRepositoryActions
@@ -55,14 +56,16 @@ fun Route.userRoutes(userService: UserRepositoryActions) {
         }
 
         // Delete user
-        delete("/{userId}/{password}") {
+        delete("/deleteuser") {
             try {
-                val userId = call.parameters["userId"]?.toIntOrNull()
-                    ?: return@delete call.respond(HttpStatusCode.BadRequest, "Invalid user ID")
 
-                val password = call.parameters["password"] ?: return@delete call.respond(
-                    HttpStatusCode.BadRequest, "Password is required"
-                )
+                val deleteRequest = call.receive<DeleteUserRequest>()
+                val userId = deleteRequest.uid
+                if (userId.toString().isBlank()) {
+                    call.respond(HttpStatusCode.BadRequest, "userId cannot be empty")
+                    return@delete
+                }
+                val password = deleteRequest.password
 
                 if (password.isBlank()) {
                     call.respond(HttpStatusCode.BadRequest, "Password cannot be empty")
@@ -85,11 +88,11 @@ fun Route.userRoutes(userService: UserRepositoryActions) {
         put("/update-password") {
             try {
                 val updatePasswordRequest = call.receive<UpdatePasswordRequest>()
-                val userId = updatePasswordRequest.uid
+                val uid = updatePasswordRequest.uid
                 val currentPassword = updatePasswordRequest.currentPassword
                 val newPassword = updatePasswordRequest.newPassword
 
-                if (userId.toString().isBlank() || currentPassword.isBlank() || newPassword.isBlank()) {
+                if (uid.toString().isBlank() || currentPassword.isBlank() || newPassword.isBlank()) {
                     call.respond(HttpStatusCode.BadRequest, "All fields are required")
                     return@put
                 }

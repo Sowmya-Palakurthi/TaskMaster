@@ -14,7 +14,7 @@ import dagger.Component
     PsqlDataComponent::class
   ],
   modules = [
-    SQSModule::class
+    SQSModule::class,
   ]
 )
 interface SQSComponent {

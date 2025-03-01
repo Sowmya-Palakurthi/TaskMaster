@@ -1,5 +1,6 @@
 package `in`.porter.taskmaster.data.RedisRepository
 
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity.tasks.uuid
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity.users.uid
@@ -12,21 +13,22 @@ import redis.clients.jedis.Jedis
 class TaskRedisService @Inject constructor(private val jedis: Jedis): TaskRedisActions {
 
 
-
     override fun getTaskData(userId: Int): List<TaskResponse> {
         return try {
             val taskIds = jedis.smembers("tasks:set:$uid")
             taskIds.mapNotNull {
                 jedis.get("task:$uid:$uuid")?.let { Json.decodeFromString<TaskResponse>(it) }
+
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            emptyList<TaskResponse>()
+            emptyList()
         }
     }
 
-    override fun deleteTaskData(userId: Int, taskId: Int): Boolean {
+    override fun deleteTaskData(uid:Int, uuid:Int): Boolean {
         return try {
+
             jedis.del("task:$uid:$uuid")
             jedis.srem("tasks:set:$uid", uuid.toString())
             true
@@ -55,14 +57,6 @@ class TaskRedisService @Inject constructor(private val jedis: Jedis): TaskRedisA
     }
 
 
-    override fun setUserData(data: String, time: Long, userId: Int): Boolean {
-        return try {
-            jedis.setex("user:$userId", time, data)
-            true
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            false
-        }
-    }
+
 }
 

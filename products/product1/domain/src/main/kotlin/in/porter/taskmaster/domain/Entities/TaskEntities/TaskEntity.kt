@@ -3,6 +3,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.`java-time`.date
 object TaskEntity {
     object tasks : Table("tasks") {
+
         val uuid = integer("uuid")
         val uid = integer("uid")
         val title = varchar("title", 255)

@@ -1,23 +1,23 @@
 package `in`.porter.taskmaster.data.RedisRepository
 
-import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import redis.clients.jedis.Jedis
 import javax.inject.Inject
 
+class UserRedisService @Inject constructor(private val jedis: Jedis) : UserRedisActions {
 
-class UserRedisService @Inject constructor( private val jedis:Jedis) : UserRedisActions {
-
-
+    private val logger: Logger = LogManager.getLogger(UserRedisService::class.java)
 
     override fun getUserData(uid: Int): UserResponse? {
         return try {
             jedis.get("user:$uid")?.let { Json.decodeFromString<UserResponse>(it) }
         } catch (e: Exception) {
-            println("Error fetching user data from cache for ID $uid: ${e.localizedMessage}")
+            logger.error("Error fetching user data from cache for ID $uid: ${e.localizedMessage}", e)
             null
         }
     }
@@ -30,7 +30,7 @@ class UserRedisService @Inject constructor( private val jedis:Jedis) : UserRedis
             jedis.del("user:$uid")
             true
         } catch (e: Exception) {
-            println("Error deleting  user data from cache for ID $uid: ${e.localizedMessage}")
+            logger.error("Error deleting user data from cache for ID $uid: ${e.localizedMessage}", e)
             false
         }
     }
@@ -41,48 +41,7 @@ class UserRedisService @Inject constructor( private val jedis:Jedis) : UserRedis
             jedis.set("user:${request.uid}", userJson)
             true
         } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    override fun getTaskData(uid: Int): List<TaskRequest>? {
-        return try {
-            val taskIds = jedis.smembers("tasks:set:$uid")
-            taskIds.mapNotNull { uuid ->
-                jedis.get("task:$uid:$uuid")?.let { Json.decodeFromString<TaskRequest>(it) }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    override fun deleteTaskData(uid: Int, uuid: Int): Boolean {
-        return try {
-            jedis.del("task:$uid:$uuid")
-            jedis.srem("tasks:set:$uid", uuid.toString())
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    override fun addTaskData(request: TaskRequest): Boolean {
-        return try {
-            val taskJson = Json.encodeToString(request)
-            val uid = request.uid
-            val uuid = request.uuid
-            val keyType = jedis.type("tasks:set:$uid")
-            if (keyType != "set" && keyType != "none") {
-                jedis.del("tasks:set:$uid")
-            }
-            jedis.set("task:$uid:$uuid", taskJson)
-            jedis.sadd("tasks:set:$uid", uuid.toString())
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
+            logger.error("Error adding user data to cache for ID ${request.uid}: ${e.localizedMessage}", e)
             false
         }
     }
@@ -92,7 +51,7 @@ class UserRedisService @Inject constructor( private val jedis:Jedis) : UserRedis
             jedis.setex("user:$userId", time, data)
             true
         } catch (exception: Exception) {
-            exception.printStackTrace()
+            logger.error("Error setting user data in cache for ID $userId: ${exception.localizedMessage}", exception)
             false
         }
     }

@@ -46,6 +46,10 @@ class PsqlModule {
     val hikariConfig = HikariConfig(properties).apply {
       poolName = properties.getProperty("poolName")
       metricRegistry = meterRegistry
+      jdbcUrl = properties.getProperty("jdbcUrl")
+      username = properties.getProperty("username")
+      password = properties.getProperty("password")
+      maximumPoolSize = 10
 
       // https://github.com/brettwooldridge/HikariCP/wiki/Rapid-Recovery
       addDataSourceProperty("socketTimeout", 15)

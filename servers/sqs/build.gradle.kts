@@ -15,6 +15,7 @@ dependencies {
   implementation(project(Modules.TASKMASTER.Api.service))
   implementation(project(Modules.TASKMASTER.Api.models))
   implementation(project(Modules.Servers.client))
+  implementation("redis.clients:jedis:5.1.0")
 
   implementation(project(Modules.Servers.commons))
   implementation(Libs.KotlinUtils.serdeJackson)

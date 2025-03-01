@@ -91,4 +91,6 @@ object Libs {
     const val cloudwatch = "$group:micrometer-registry-cloudwatch2:$version"
   }
 
+  const val kotlinxSerializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+  const val kotlinxDatetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 }

@@ -5,10 +5,6 @@ import kotlinx.serialization.Serializable
 data class UpdateTaskStatusRequest(
     var uid: Int,
     var uuid: Int,
-    var isdone: Boolean)
-//) {
-//    fun getUserId(): Int = userid
-//    fun getTaskId(): Int = taskid
-//    fun isDone(): Boolean = isDone
-//    fun setIsDone(isDone: Boolean) { this.isDone = isDone }
-//}
+    var isdone: Boolean
+
+    )

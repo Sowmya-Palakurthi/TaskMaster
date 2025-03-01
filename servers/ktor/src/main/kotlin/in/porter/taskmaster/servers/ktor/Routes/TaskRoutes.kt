@@ -1,8 +1,9 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
 
 import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
-import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskRequest
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusRequest
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 
 import `in`.porter.taskmaster.domain.TaskRepositoryActions
 
@@ -16,9 +17,7 @@ import io.ktor.server.request.*
 fun Route.TaskRoutes(taskService: TaskRepositoryActions, taskMapper: TaskMapperActions) {
 
     route("/tasks") {
-        get("/"){
-            call.respondText("Hello, World!")
-        }
+
         get("/{userId}") {
             try {
                 val userId = call.parameters["userId"]?.toInt() ?: return@get call.respond(
@@ -39,8 +38,8 @@ fun Route.TaskRoutes(taskService: TaskRepositoryActions, taskMapper: TaskMapperA
 
         post("/add") {
             try {
-                val taskResponse = call.receive<TaskResponse>()
-                val isAdded = taskService.addTask(taskMapper.taskResponseToRequest(taskResponse))
+                val taskResponse = call.receive<TaskRequest>()
+                val isAdded = taskService.addTask(taskMapper.taskRequestToResponse(taskResponse))
                 if (isAdded) {
                     call.respond(HttpStatusCode.Created, "Task added successfully.")
                 } else {
@@ -53,31 +52,23 @@ fun Route.TaskRoutes(taskService: TaskRepositoryActions, taskMapper: TaskMapperA
         }
 
 
-        delete("/{taskId}/{userid}/{password}") {
-            try {
-                val userId = call.parameters["userid"]?.toIntOrNull()
-                if (userId == null) {
-                    call.respond(HttpStatusCode.Unauthorized, "Invalid token or user not found.")
-                    return@delete
+        delete("/deletetask") {
+
+
+                try {
+                        val taskInput = call.receive<DeleteTaskRequest>()
+                        val isDeleted = taskService.deleteTask(taskInput)
+
+                    if (isDeleted) {
+                        call.respond(HttpStatusCode.Created, "Task deleted successfully.")
+                    } else {
+                        call.respond(HttpStatusCode.BadRequest, "Task not deleted due to some issue")
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, "Error adding task.")
                 }
 
-                val taskId = call.parameters["taskId"]?.toIntOrNull()
-                val password = call.parameters["password"]
-
-                if (taskId == null || password.isNullOrBlank()) {
-                    call.respond(HttpStatusCode.BadRequest, "Task ID and password are required.")
-                    return@delete
-                }
-
-                val isDeleted = taskService.deleteTask(userId, taskId, password)
-                if (isDeleted) {
-                    call.respond(HttpStatusCode.OK, "Task deleted successfully.")
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "Task not found.")
-                }
-            } catch (e: Exception) {
-                call.handleException(e, "Error deleting task.")
-            }
         }
 
         put("/update-status") {

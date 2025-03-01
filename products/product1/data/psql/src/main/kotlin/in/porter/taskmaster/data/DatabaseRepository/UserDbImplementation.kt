@@ -13,15 +13,13 @@ import javax.inject.Inject
 
 class UserDbImplementation @Inject constructor() : UserDbActions {
 
-    val userObj = UserEntity.users // Access user table
-
     override suspend fun getUserFromDb(userId: Int): UserResponse? {
         return transaction {
-            userObj.select { userObj.uid eq userId }
+            UserEntity.users.select { uid eq userId }
                 .singleOrNull()?.let {
                     UserResponse(
-                        uid = it[userObj.uid],
-                        username = it[userObj.username],
+                        uid = it[uid],
+                        username = it[UserEntity.users.username],
 
                     )
                 }
@@ -31,7 +29,7 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
     override suspend fun addUserInDb(request: UserRequest): Boolean {
 
         return transaction {
-            userObj.insert {
+            UserEntity.users.insert {
                 it[uid] = request.uid
                 it[username] = request.username
                 it[password] = request.password
@@ -42,9 +40,9 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun deleteUserFromDb(userId: Int,password: String): Boolean {
         return transaction {
-            val user = userObj.select { userObj.uid eq userId }.singleOrNull()
-            if (user != null && user[userObj.password] == password) {
-                val deletedRows = userObj.deleteWhere { userObj.uid eq uid }
+            val user = UserEntity.users.select { uid eq userId }.singleOrNull()
+            if (user != null && user[UserEntity.users.password] == password) {
+                val deletedRows = UserEntity.users.deleteWhere { uid eq uid }
                 deletedRows > 0
             } else {
                 false
@@ -54,7 +52,7 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun updatePasswordInDb(request: UpdatePasswordRequest): Boolean {
         return transaction {
-            val updatedRows = userObj.update({ userObj.uid eq request.uid and (userObj.password eq request.currentPassword) }) {
+            val updatedRows = UserEntity.users.update({ uid eq request.uid and (UserEntity.users.password eq request.currentPassword) }) {
                 it[password] = request.newPassword
             }
             updatedRows > 0
@@ -63,7 +61,7 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
 
     override suspend fun isPasswordValidForUser(userId: Int, password: String): Boolean {
         return transaction {
-            userObj.select { userObj.uid eq userId and (userObj.password eq password) }
+            UserEntity.users.select { uid eq userId and (UserEntity.users.password eq password) }
                 .count() > 0
         }
     }

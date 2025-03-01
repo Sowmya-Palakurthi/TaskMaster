@@ -20,6 +20,7 @@ dependencies {
   implementation(project(Modules.Servers.commons))
   implementation(project(Modules.Servers.client))
 
+  implementation("redis.clients:jedis:5.1.0")
 
 
   implementation(Libs.KotlinUtils.serdeJackson)

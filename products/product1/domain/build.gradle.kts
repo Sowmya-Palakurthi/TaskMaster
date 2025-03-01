@@ -14,11 +14,16 @@ plugins {
 //  kotlin("plugin.serialization") version "1.9.22"
   kotlin("jvm") version Libs.kotlinVersion // Add JVM plugin for Kotlin
   kotlin(Plugins.kotlinxSerialization) version Libs.kotlinVersion
+    //kotlin("plugin.serialization") version "1.9.10"
+
 
 }
 
 dependencies {
 
+  implementation("redis.clients:jedis:5.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     implementation(Libs.KotlinUtils.openTracing)
     //implementation(project(Modules.TASKMASTER.Api.models))
