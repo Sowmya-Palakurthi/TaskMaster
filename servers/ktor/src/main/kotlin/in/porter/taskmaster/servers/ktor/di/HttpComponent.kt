@@ -5,9 +5,9 @@ import `in`.porter.taskmaster.servers.commons.usecases.external.Run
 import `in`.porter.taskmaster.data.di.PsqlDataComponent
 
 import dagger.Component
-import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
-import `in`.porter.taskmaster.domain.TaskRepositoryActions
-import `in`.porter.taskmaster.domain.UserRepositoryActions
+import `in`.porter.taskmaster.domain.MapperInterfaces.TaskMapperActions
+import `in`.porter.taskmaster.domain.RepositoryActions.TaskRepositoryActions
+import `in`.porter.taskmaster.domain.RepositoryActions.UserRepositoryActions
 
 @HttpScope
 @Component(
@@ -19,6 +19,6 @@ import `in`.porter.taskmaster.domain.UserRepositoryActions
 interface HttpComponent {
   val run: Run
   val taskMapper: TaskMapperActions
-  val userActions:UserRepositoryActions
-  val taskActions:TaskRepositoryActions
+  val userActions: UserRepositoryActions
+  val taskActions: TaskRepositoryActions
 }

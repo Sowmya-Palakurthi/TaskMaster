@@ -2,6 +2,8 @@ package `in`.porter.taskmaster.data.DatabaseRepository
 
 
 
+import `in`.porter.taskmaster.domain.DbInterfaces.UserDbActions
+import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity.users.uid
@@ -38,11 +40,28 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
         }
     }
 
-    override suspend fun deleteUserFromDb(userId: Int,password: String): Boolean {
+//    override suspend fun deleteUserFromDb(userId: Int,password: String): Boolean {
+//        return transaction {
+//            val user = UserEntity.users.select { uid eq userId }.singleOrNull()
+//            if (user != null && user[UserEntity.users.password] == password) {
+//                val deletedRows = UserEntity.users.deleteWhere { uid eq uid }
+//                val deletedTasks=TaskEntity.tasks.deleteWhere { TaskEntity.tasks.uid eq userId }
+//                deletedRows > 0
+//            } else {
+//                false
+//            }
+//        }
+//    }
+
+    override suspend fun deleteUserFromDb(userId: Int, password: String): Boolean {
         return transaction {
             val user = UserEntity.users.select { uid eq userId }.singleOrNull()
             if (user != null && user[UserEntity.users.password] == password) {
-                val deletedRows = UserEntity.users.deleteWhere { uid eq uid }
+                // Delete tasks associated with the user
+                TaskEntity.tasks.deleteWhere { TaskEntity.tasks.uid eq userId }
+
+                // Delete the user
+                val deletedRows = UserEntity.users.deleteWhere { uid eq userId }
                 deletedRows > 0
             } else {
                 false

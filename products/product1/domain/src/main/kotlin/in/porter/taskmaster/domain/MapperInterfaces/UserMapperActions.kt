@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.data.mapperclasses
+package `in`.porter.taskmaster.domain.MapperInterfaces
 
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse

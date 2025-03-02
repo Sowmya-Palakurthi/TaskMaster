@@ -14,6 +14,8 @@ plugins {
 
 dependencies {
   implementation(Libs.KotlinUtils.serdeJackson)
+  implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 }
 
 val sourceJar = task("sourceJar", Jar::class) {

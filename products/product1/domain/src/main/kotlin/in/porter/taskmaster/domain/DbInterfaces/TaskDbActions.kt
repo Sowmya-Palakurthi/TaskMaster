@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.data.DatabaseRepository
+package `in`.porter.taskmaster.domain.DbInterfaces
 
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse

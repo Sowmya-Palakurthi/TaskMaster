@@ -1,10 +1,11 @@
 package `in`.porter.taskmaster.data.DatabaseRepository
 
+import `in`.porter.taskmaster.domain.DbInterfaces.TaskDbActions
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
-import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
+import `in`.porter.taskmaster.domain.MapperInterfaces.TaskMapperActions
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 import kotlinx.datetime.toKotlinLocalDate
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,8 +14,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import java.time.LocalDate as JavaLocalDate
-import java.time.format.DateTimeFormatter
-import kotlinx.datetime.LocalDate as KotlinxLocalDate
 import javax.inject.Inject
 import org.jetbrains.exposed.sql.and
 
@@ -23,7 +22,6 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
     private val userObj = UserEntity.users
 
     override suspend fun getTasksFromDb(userId: Int): List<TaskResponse> {
-
         return transaction {
             taskObj.select { taskObj.uid eq userId }.map {
                 TaskResponse(
@@ -32,13 +30,12 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
                     title = it[taskObj.title],
                     description = it[taskObj.description],
                     isdone = it[taskObj.isdone],
-                    deadline =it[taskObj.deadline].toKotlinLocalDate()
+                    deadline = it[taskObj.deadline].toKotlinLocalDate() // ✅ Correct method
                 )
             }
         }
-
-
     }
+
 
     override suspend fun addTaskInDb(request: TaskResponse): Boolean {
         return transaction {
@@ -76,7 +73,6 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
                 }
                 deletedRows > 0
             } else {
-                // Invalid password
                 false
             }
         }

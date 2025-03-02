@@ -1,10 +1,5 @@
 package `in`.porter.taskmaster.domain.Entities.TaskEntities
 
-
-
-
-
-
 import `in`.porter.taskmaster.domain.LocalDateSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate

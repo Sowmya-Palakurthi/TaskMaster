@@ -5,20 +5,20 @@ package `in`.porter.taskmaster.data.di
 
 import dagger.Binds
 import dagger.Module
-import `in`.porter.taskmaster.data.DatabaseRepository.TaskDbActions
-
+import `in`.porter.taskmaster.data.CommonRepository.TaskRepositoryImplementation
+import `in`.porter.taskmaster.data.CommonRepository.UserRepositoryImplementation
 import `in`.porter.taskmaster.data.DatabaseRepository.TaskDbImplementation
-import `in`.porter.taskmaster.data.DatabaseRepository.UserDbActions
 import `in`.porter.taskmaster.data.DatabaseRepository.UserDbImplementation
-import `in`.porter.taskmaster.data.RedisRepository.TaskRedisActions
+import `in`.porter.taskmaster.data.MapperClasses.TaskMapperService
 import `in`.porter.taskmaster.data.RedisRepository.TaskRedisService
-import `in`.porter.taskmaster.data.RedisRepository.UserRedisActions
 import `in`.porter.taskmaster.data.RedisRepository.UserRedisService
-import `in`.porter.taskmaster.data.TaskRepositoryImplementation
-import `in`.porter.taskmaster.data.UserRepositoryImplementation
-import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
-import `in`.porter.taskmaster.data.mapperclasses.TaskMapperService
-import `in`.porter.taskmaster.domain.*
+import `in`.porter.taskmaster.domain.DbInterfaces.TaskDbActions
+import `in`.porter.taskmaster.domain.DbInterfaces.UserDbActions
+import `in`.porter.taskmaster.domain.MapperInterfaces.TaskMapperActions
+import `in`.porter.taskmaster.domain.RedisInterfaces.TaskRedisActions
+import `in`.porter.taskmaster.domain.RedisInterfaces.UserRedisActions
+import `in`.porter.taskmaster.domain.RepositoryActions.TaskRepositoryActions
+import `in`.porter.taskmaster.domain.RepositoryActions.UserRepositoryActions
 
 
 import javax.inject.Singleton
@@ -51,7 +51,9 @@ interface DataAppModule {
 
     @Binds
     @Singleton
-    fun bindTaskMapperService(taskMapper: TaskMapperService): TaskMapperActions
+    fun bindTaskMapperService( taskMapperImpl: TaskMapperService): TaskMapperActions
+
+
 }
 
 

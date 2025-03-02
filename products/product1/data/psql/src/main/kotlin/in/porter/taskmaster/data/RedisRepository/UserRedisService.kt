@@ -2,6 +2,7 @@ package `in`.porter.taskmaster.data.RedisRepository
 
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.RedisInterfaces.UserRedisActions
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.apache.logging.log4j.LogManager
@@ -39,6 +40,7 @@ class UserRedisService @Inject constructor(private val jedis: Jedis) : UserRedis
         return try {
             val userJson = Json.encodeToString(request)
             jedis.set("user:${request.uid}", userJson)
+
             true
         } catch (e: Exception) {
             logger.error("Error adding user data to cache for ID ${request.uid}: ${e.localizedMessage}", e)
@@ -46,9 +48,9 @@ class UserRedisService @Inject constructor(private val jedis: Jedis) : UserRedis
         }
     }
 
-    override fun setUserData(data: String, time: Long, userId: Int): Boolean {
+    override fun setUserData(userId:Int, time:Long,userJson: String): Boolean {
         return try {
-            jedis.setex("user:$userId", time, data)
+            jedis.set("user:$userId", userJson)
             true
         } catch (exception: Exception) {
             logger.error("Error setting user data in cache for ID $userId: ${exception.localizedMessage}", exception)

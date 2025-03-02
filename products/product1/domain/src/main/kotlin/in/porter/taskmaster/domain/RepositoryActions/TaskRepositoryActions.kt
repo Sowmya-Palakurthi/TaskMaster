@@ -1,7 +1,6 @@
-package `in`.porter.taskmaster.domain
+package `in`.porter.taskmaster.domain.RepositoryActions
 
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
-import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskRequest
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusRequest
 

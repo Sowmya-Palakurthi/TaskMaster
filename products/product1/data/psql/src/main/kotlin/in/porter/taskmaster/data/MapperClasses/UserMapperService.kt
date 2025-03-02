@@ -1,7 +1,8 @@
-package `in`.porter.taskmaster.data.mapperclasses
+package `in`.porter.taskmaster.data.MapperClasses
 
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
+import `in`.porter.taskmaster.domain.MapperInterfaces.UserMapperActions
 import javax.inject.Inject
 
 

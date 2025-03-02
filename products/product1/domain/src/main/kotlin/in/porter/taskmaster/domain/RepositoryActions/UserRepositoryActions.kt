@@ -1,4 +1,4 @@
-package `in`.porter.taskmaster.domain
+package `in`.porter.taskmaster.domain.RepositoryActions
 
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest

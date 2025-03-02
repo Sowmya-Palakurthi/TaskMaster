@@ -1,6 +1,5 @@
-package `in`.porter.taskmaster.data.RedisRepository
+package `in`.porter.taskmaster.domain.RedisInterfaces
 
-import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
 
 interface TaskRedisActions {

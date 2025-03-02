@@ -2,10 +2,11 @@ package `in`.porter.taskmaster.data.di
 
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Subcomponent
-import `in`.porter.taskmaster.data.DatabaseRepository.*
-import `in`.porter.taskmaster.data.RedisRepository.*
-import `in`.porter.taskmaster.data.mapperclasses.TaskMapperActions
+import `in`.porter.taskmaster.domain.DbInterfaces.TaskDbActions
+import `in`.porter.taskmaster.domain.DbInterfaces.UserDbActions
+import `in`.porter.taskmaster.domain.MapperInterfaces.TaskMapperActions
+import `in`.porter.taskmaster.domain.RedisInterfaces.TaskRedisActions
+import `in`.porter.taskmaster.domain.RedisInterfaces.UserRedisActions
 import io.micrometer.core.instrument.MeterRegistry
 import org.jetbrains.exposed.sql.Database
 import redis.clients.jedis.Jedis

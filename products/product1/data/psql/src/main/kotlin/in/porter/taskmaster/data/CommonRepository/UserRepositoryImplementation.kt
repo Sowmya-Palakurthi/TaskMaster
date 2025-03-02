@@ -1,9 +1,9 @@
-package `in`.porter.taskmaster.data
+package `in`.porter.taskmaster.data.CommonRepository
 
 import org.slf4j.LoggerFactory
-import `in`.porter.taskmaster.domain.UserRepositoryActions
-import `in`.porter.taskmaster.data.DatabaseRepository.UserDbActions
-import `in`.porter.taskmaster.data.RedisRepository.UserRedisActions
+import `in`.porter.taskmaster.domain.RepositoryActions.UserRepositoryActions
+import `in`.porter.taskmaster.domain.DbInterfaces.UserDbActions
+import `in`.porter.taskmaster.domain.RedisInterfaces.UserRedisActions
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
@@ -24,8 +24,9 @@ class UserRepositoryImplementation @Inject constructor(
         if (cachedUser != null) return cachedUser
 
         val userFromDb = userDb.getUserFromDb(userId)
+        val userJson = Json.encodeToString(userFromDb)
         userFromDb?.let {
-            redisCache.setUserData(Json.encodeToString(it), 3600, userId)
+            redisCache.setUserData(userId,3600,userJson)
         }
 
         return userFromDb
