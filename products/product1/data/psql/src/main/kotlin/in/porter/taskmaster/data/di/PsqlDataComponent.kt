@@ -17,7 +17,6 @@ import javax.inject.Singleton
   modules = [
     UtilsModule::class,
     DataAppModule::class,
-//    JedisModule::class
   ]
 )
 interface PsqlDataComponent {
@@ -27,6 +26,7 @@ interface PsqlDataComponent {
   fun getUserDbService(): UserDbActions
   fun getTaskDbService(): TaskDbActions
   fun getTaskMapperService(): TaskMapperActions
+
 
   @Component.Builder
   interface Builder {
@@ -42,16 +42,3 @@ interface PsqlDataComponent {
     fun build(): PsqlDataComponent
 }}
 
-
-//
-//@Component.Builder
-//interface Builder {
-//
-//  @BindsInstance
-//  fun database(db: Database): Builder
-//
-//  @BindsInstance
-//  fun meterRegistry(meterRegistry: MeterRegistry): Builder
-//
-//  fun build(): PsqlDataComponent  // ✅ Make sure this is the only method returning the component
-//}

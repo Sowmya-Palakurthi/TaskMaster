@@ -21,6 +21,7 @@ import io.ktor.client.*
 import io.micrometer.core.instrument.MeterRegistry
 import org.jetbrains.exposed.sql.Database
 import redis.clients.jedis.Jedis
+
 import javax.inject.Singleton
 
 @Singleton
@@ -49,6 +50,7 @@ interface RootComponent {
   val taskRedisService: TaskRedisActions
   val userRepository: UserRepositoryActions
   val taskRepository: TaskRepositoryActions
+
 
   @Component.Builder
   interface Builder {

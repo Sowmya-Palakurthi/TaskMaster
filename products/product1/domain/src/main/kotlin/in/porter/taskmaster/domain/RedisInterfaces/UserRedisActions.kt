@@ -7,5 +7,7 @@ interface UserRedisActions{
     fun getUserData(uid: Int): UserResponse?
     fun deleteUserData(uid: Int): Boolean
     fun addUserData(request: UserRequest): Boolean
-   fun setUserData(userId:Int, time:Long,userJson: String): Boolean
+    fun setUserData(userId:Int, time:Long,userJson: String): Boolean
 }
+
+

@@ -1,5 +1,6 @@
 package `in`.porter.taskmaster.data.DatabaseRepository
 
+import `in`.porter.taskmaster.data.RedisRepository.UserRedisService
 import `in`.porter.taskmaster.domain.DbInterfaces.TaskDbActions
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskResponse
@@ -8,6 +9,8 @@ import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
 import `in`.porter.taskmaster.domain.MapperInterfaces.TaskMapperActions
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.DeleteTaskRequest
 import kotlinx.datetime.toKotlinLocalDate
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -20,6 +23,7 @@ import org.jetbrains.exposed.sql.and
 class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMapperActions) : TaskDbActions {
     private val taskObj = TaskEntity.tasks
     private val userObj = UserEntity.users
+    private val logger: Logger = LogManager.getLogger(TaskDbImplementation::class.java)
 
     override suspend fun getTasksFromDb(userId: Int): List<TaskResponse> {
         return transaction {
@@ -40,14 +44,18 @@ class TaskDbImplementation @Inject constructor(private val taskMapper: TaskMappe
     override suspend fun addTaskInDb(request: TaskResponse): Boolean {
         return transaction {
             if(request.uuid.toString().isBlank()){
-                println("Error: TaskID cannot be null.")
+                logger.info("Error: TaskID cannot be null.")
                 return@transaction false
             }
-            if(request.uuid.toString().isBlank()){
-                println("Error: UserID cannot be null.")
+            if(request.uid.toString().isBlank()){
+                logger.info("Error: UserID cannot be null.")
                 return@transaction false
             }
-
+//            val userExists = userObj.select { userObj.uid eq request.uid }.empty()
+//            if (userExists) {
+//                logger.info("Error: UserID does not exist.")
+//                return@transaction false
+//            }
             taskObj.insert {
                 it[uuid] = request.uuid
                 it[uid] = request.uid

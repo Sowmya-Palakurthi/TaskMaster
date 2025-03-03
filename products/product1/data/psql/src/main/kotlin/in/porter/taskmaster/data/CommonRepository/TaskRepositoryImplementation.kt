@@ -36,7 +36,7 @@ class TaskRepositoryImplementation @Inject constructor(
     }
     override suspend fun addTask(request: TaskResponse): Boolean {
         return try {
-            if (request.uid.toString().isNotBlank()) {
+            if (request.uuid.toString().isNotBlank()) {
                 val isAddedToDb = taskDb.addTaskInDb(request)
                 if (isAddedToDb) {
                     redisCache.addTaskData(request)

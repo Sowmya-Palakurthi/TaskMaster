@@ -1,117 +1,80 @@
 package `in`.porter.taskmaster.servers.ktor.Routes
+//
+//import `in`.porter.taskmaster.servers.ktor.Handlers.UserHandler
+//import io.ktor.http.*
+//import io.ktor.server.application.*
+//import io.ktor.server.request.*
+//import io.ktor.server.response.*
+//import io.ktor.server.routing.*
+//import org.slf4j.LoggerFactory
+//
+//fun Route.userRoutes(userHandler: UserHandler) {
+//    val logger = LoggerFactory.getLogger("UserRoutes")
+//
+//    route("/users") {
+//
+//        get("/{userId}") {
+//            try {
+//                userHandler.getUser(call)
+//            } catch (e: Exception) {
+//                logger.error("Error fetching user: ${e.localizedMessage}", e)
+//                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
+//            }
+//        }
+//
+//
+//        post("/add") {
+//            try {
+//                userHandler.addUser(call)
+//            } catch (e: Exception) {
+//                logger.error("Error adding user: ${e.localizedMessage}", e)
+//                call.respond(HttpStatusCode.InternalServerError, "Error occurred")
+//            }
+//        }
+//
+//        delete("/deleteuser") {
+//            try {
+//                userHandler.deleteUser(call)
+//            } catch (e: Exception) {
+//                logger.error("Error deleting user: ${e.localizedMessage}", e)
+//                call.respond(HttpStatusCode.InternalServerError, "Error deleting user")
+//            }
+//        }
+//
+//        put("/update-password") {
+//            try {
+//                userHandler.updatePassword(call)
+//            } catch (e: Exception) {
+//                logger.error("Error updating password: ${e.localizedMessage}", e)
+//                call.respond(HttpStatusCode.InternalServerError, "Error updating password")
+//            }
+//        }
+//    }
+//}
 
-import `in`.porter.taskmaster.domain.Entities.UserEntities.DeleteUserRequest
-import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
-import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
-import `in`.porter.taskmaster.domain.RepositoryActions.UserRepositoryActions
-import `in`.porter.taskmaster.domain.exceptions.MissingEmailIdException
-import io.ktor.http.*
+
+import `in`.porter.taskmaster.servers.ktor.Handlers.UserHandler
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.slf4j.LoggerFactory
 
-fun Route.userRoutes(userService: UserRepositoryActions) {
-    val logger = LoggerFactory.getLogger("UserRoutes")
-
+fun Route.userRoutes(userHandler: UserHandler) {
     route("/users") {
 
         get("/{userId}") {
-            try {
-                val userId = call.parameters["userId"]?.toIntOrNull()
-                    ?: throw MissingEmailIdException("Missing or invalid user ID")
-
-                val user = userService.getUser(userId)
-                if (user != null) {
-                    call.respond(HttpStatusCode.OK, user)
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "User with ID '$userId' not found")
-                }
-            } catch (e: MissingEmailIdException) {
-                logger.error("Error: ${e.message}")
-                call.respond(HttpStatusCode.BadRequest, e.message ?: "Bad Request")
-            } catch (e: Exception) {
-                logger.error("Error fetching user: ${e.localizedMessage}", e)
-                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
-            }
+            userHandler.getUser(call)
         }
 
-        // Add a new user
         post("/add") {
-            try {
-                val userRequest = call.receive<UserRequest>()
-
-                val isAdded= userService.addUser(userRequest)
-
-                if (isAdded) {
-                    call.respond(HttpStatusCode.Created, "User created successfully")
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "User could not be added")
-                }
-            } catch (e: Exception) {
-                logger.error("Error adding user: ${e.localizedMessage}", e)
-                call.respond(HttpStatusCode.BadRequest, e.message ?: "Error occurred")
-            }
+            userHandler.addUser(call)
         }
 
-        // Delete user
         delete("/deleteuser") {
-            try {
-
-                val deleteRequest = call.receive<DeleteUserRequest>()
-                val userId = deleteRequest.uid
-                if (userId.toString().isBlank()) {
-                    call.respond(HttpStatusCode.BadRequest, "userId cannot be empty")
-                    return@delete
-                }
-                val password = deleteRequest.password
-
-                if (password.isBlank()) {
-                    call.respond(HttpStatusCode.BadRequest, "Password cannot be empty")
-                    return@delete
-                }
-
-                val isDeleted = userService.deleteUser(userId, password)
-                if (isDeleted) {
-                    call.respond(HttpStatusCode.OK, "User deleted successfully")
-                } else {
-                    call.respond(HttpStatusCode.Unauthorized, "Invalid user ID or password")
-                }
-            } catch (e: Exception) {
-                logger.error("Error deleting user: ${e.localizedMessage}", e)
-                call.respond(HttpStatusCode.InternalServerError, "Error deleting user")
-            }
+            userHandler.deleteUser(call)
         }
 
-        // Update password
         put("/update-password") {
-            try {
-                val updatePasswordRequest = call.receive<UpdatePasswordRequest>()
-                val uid = updatePasswordRequest.uid
-                val currentPassword = updatePasswordRequest.currentPassword
-                val newPassword = updatePasswordRequest.newPassword
-
-                if (uid.toString().isBlank() || currentPassword.isBlank() || newPassword.isBlank()) {
-                    call.respond(HttpStatusCode.BadRequest, "All fields are required")
-                    return@put
-                }
-
-                if (currentPassword == newPassword) {
-                    call.respond(HttpStatusCode.BadRequest, "Current and new password cannot be the same")
-                    return@put
-                }
-
-                val isUpdated = userService.updateUser(updatePasswordRequest)
-                if (isUpdated) {
-                    call.respond(HttpStatusCode.OK, "Password updated successfully")
-                } else {
-                    call.respond(HttpStatusCode.Unauthorized, "Invalid user ID or current password")
-                }
-            } catch (e: Exception) {
-                logger.error("Error updating password: ${e.localizedMessage}", e)
-                call.respond(HttpStatusCode.InternalServerError, "Error updating password")
-            }
+            userHandler.updatePassword(call)
         }
     }
 }
+

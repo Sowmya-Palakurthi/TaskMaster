@@ -14,7 +14,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import `in`.porter.taskmaster.servers.ktor.Handlers.TaskHandler
+import `in`.porter.taskmaster.servers.ktor.Handlers.UserHandler
 import `in`.porter.taskmaster.servers.ktor.Routes.configureRouting
+import `in`.porter.taskmaster.servers.ktor.di.AppComponent
 import io.ktor.server.application.*
 import io.ktor.http.*
 import io.ktor.server.response.*
@@ -25,6 +28,7 @@ import io.ktor.server.plugins.doublereceive.*
 import io.ktor.server.plugins.forwardedheaders.*
 import io.ktor.server.plugins.statuspages.*
 import java.time.Duration
+import javax.inject.Inject
 
 fun Application.main() {
 
@@ -87,6 +91,104 @@ fun Application.main() {
 
   val httpComponent = HttpComponentFactory.build()
 
-  configureRouting(httpComponent.userActions, httpComponent.taskActions,httpComponent.taskMapper )
+  val appComponent = AppComponent.create()
+  configureRouting(appComponent.taskHandler(), appComponent.userHandler())
 
 }
+
+/*
+import `in`.porter.taskmaster.servers.ktor.di.HttpComponentFactory
+import `in`.porter.kotlinutils.instrumentation.sentryktorfeature.SentryKtorFeature
+import `in`.porter.kotlinutils.serde.jackson.custom.*
+import `in`.porter.kotlinutils.webserver.ktor.features.calltracing.CallTracingFeature
+import `in`.porter.kotlinutils.webserver.ktor.features.country.CountryServerFeature
+import `in`.porter.kotlinutils.webserver.ktor.features.language.LanguageServerFeature
+import `in`.porter.kotlinutils.webserver.ktor.features.timeout.TimeoutFeature
+import `in`.porter.kotlinutils.webserver.ktor.features.tracingids.requestId
+import `in`.porter.kotlinutils.webserver.ktor.features.tracingids.traceId
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import `in`.porter.taskmaster.servers.ktor.Handlers.TaskHandler
+import `in`.porter.taskmaster.servers.ktor.Handlers.UserHandler
+import `in`.porter.taskmaster.servers.ktor.Routes.configureRouting
+import io.ktor.server.application.*
+import io.ktor.http.*
+import io.ktor.server.response.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.doublereceive.*
+import io.ktor.server.plugins.forwardedheaders.*
+import io.ktor.server.plugins.statuspages.*
+import java.time.Duration
+import javax.inject.Inject
+
+class MainApplication @Inject constructor(
+  private val taskHandler: TaskHandler,
+  private val userHandler: UserHandler
+) {
+  fun Application.main() {
+    install(ContentNegotiation) {
+      jackson {
+        propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, true)
+        registerModules(
+          KotlinModule.Builder().build(),
+          InstantSerde.millisModule,
+          LocalDateSerde.localDateModule,
+          LocalTimeSerde.localTimeSerde,
+          DurationSerde.millisModule,
+          MoneySerde.moneyModule,
+          UrlSerde.urlModule
+        )
+      }
+    }
+
+    install(XForwardedHeaders)
+    install(DoubleReceive)
+    install(CallTracingFeature)
+    install(CountryServerFeature)
+    install(LanguageServerFeature)
+    install(TimeoutFeature) {
+      duration = Duration.ofSeconds(20)
+    }
+
+    install(SentryKtorFeature) {
+      sentryTagsProvider = {
+        val tags = mutableListOf<SentryKtorFeature.SentryTag>()
+        it.traceId?.also { traceId ->
+          tags.add(SentryKtorFeature.SentryTag("traceId", traceId))
+        }
+        it.requestId?.also { requestId ->
+          tags.add(SentryKtorFeature.SentryTag("requestId", requestId))
+        }
+        tags
+      }
+    }
+
+    install(StatusPages) {
+      exception<MissingRequestParameterException> { call, exception ->
+        call.respond(
+          HttpStatusCode.BadRequest,
+          mapOf("message" to "Request parameter ${exception.parameterName} is missing")
+        )
+        throw exception
+      }
+
+      exception<JsonProcessingException> { call, exception ->
+        call.respond(HttpStatusCode.BadRequest, mapOf("message" to exception.originalMessage))
+        throw exception
+      }
+    }
+
+    val httpComponent = HttpComponentFactory.build()
+
+    configureRouting(httpComponent.taskHandler, httpComponent.userHandler)
+  }
+}
+*/

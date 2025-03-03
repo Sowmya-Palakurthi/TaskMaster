@@ -7,6 +7,18 @@ import javax.inject.Inject
 
 class CreateUserService @Inject constructor(private val userRepository: UserRepositoryActions) {
 
-    suspend fun invoke(request: UserRequest)  = userRepository.addUser(request)
+    suspend fun invoke(request: UserRequest): String {
+        return try {
+            val status=userRepository.addUser(request)
+            if(status){
+                return "User created successfully"
+            }
+          else{
+              return "User is not added due to some issue"
+            }
 
+        } catch (e: Exception) {
+            "Failed to create user: ${e.message}"
+        }
+    }
 }

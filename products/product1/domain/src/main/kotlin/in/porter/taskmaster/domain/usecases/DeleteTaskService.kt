@@ -5,8 +5,19 @@ import `in`.porter.taskmaster.domain.RepositoryActions.TaskRepositoryActions
 import javax.inject.Inject
 
 
+
 class DeleteTaskService @Inject constructor(
-        private val repository: TaskRepositoryActions
-    ) {
-        suspend fun invoke(name: DeleteTaskRequest): Boolean = repository.deleteTask(name)
+    private val repository: TaskRepositoryActions
+) {
+    suspend fun invoke(name: DeleteTaskRequest): String {
+        return try {
+           val status= repository.deleteTask(name)
+            if(status)
+            { return "Task deleted successfully"}
+            else
+            { return  "Task is not deleted due to some issue"}
+        } catch (e: Exception) {
+            "Failed to delete task: ${e.message}"
+        }
     }
+}

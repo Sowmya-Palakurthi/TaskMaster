@@ -6,7 +6,14 @@ import `in`.porter.taskmaster.domain.RepositoryActions.TaskRepositoryActions
 import javax.inject.Inject
 
 class GetTaskService @Inject constructor(
-        private val repository: TaskRepositoryActions
-    ) {
-        suspend fun invoke(request: TaskRequest): List<TaskResponse> = repository.getTasks(request.uid)
+    private val repository: TaskRepositoryActions
+) {
+    suspend fun invoke(userId: Int): Result<List<TaskResponse>> {
+        return try {
+            val tasks = repository.getTasks(userId)
+           Result.success(tasks)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

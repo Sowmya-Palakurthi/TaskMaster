@@ -1,4 +1,6 @@
-package Mappers
+package `in`.porter.taskmaster.api.service
+
+
 
 import `in`.porter.taskmaster.api.models.Entities.ApiTaskEntities.DeleteApiTaskRequest
 import `in`.porter.taskmaster.api.models.Entities.ApiTaskEntities.TaskApiRequest
@@ -12,36 +14,37 @@ import `in`.porter.taskmaster.domain.Entities.TaskEntities.UpdateTaskStatusReque
 import `in`.porter.taskmaster.domain.Entities.UserEntities.DeleteUserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
+import javax.inject.Inject
 
-class RequestMapper {
+class RequestMapper @Inject constructor() {
 
-fun toDomain(taskApiRequest: TaskApiRequest): TaskRequest {
-    return TaskRequest(
-        taskApiRequest.uid,
-        taskApiRequest.uuid,
-        taskApiRequest.title,
-        taskApiRequest.description,
-        taskApiRequest.isdone,
-        taskApiRequest.deadline
+    fun toDomain(taskApiRequest: TaskApiRequest): TaskRequest {
+        return TaskRequest(
+            taskApiRequest.uuid,
+            taskApiRequest.uid,
+            taskApiRequest.title,
+            taskApiRequest.description,
+            taskApiRequest.isdone,
+            taskApiRequest.deadline
 
-    )
-}
+        )
+    }
 
     fun toDomain(userApiRequest: UserApiRequest): UserRequest {
-    return UserRequest(
-        userApiRequest.uid,
-        userApiRequest.username,
-       userApiRequest.password
-    )
+        return UserRequest(
+            userApiRequest.uid,
+            userApiRequest.username,
+            userApiRequest.password
+        )
     }
 
     fun toDomain(apiRequest: DeleteApiTaskRequest): DeleteTaskRequest {
-            return DeleteTaskRequest(
-                uid = apiRequest.uid,
-                uuid = apiRequest.uuid,
-                password = apiRequest.password
-            )
-        }
+        return DeleteTaskRequest(
+            uid = apiRequest.uid,
+            uuid = apiRequest.uuid,
+            password = apiRequest.password
+        )
+    }
 
 
     fun toDomain(apiRequest: DeleteApiUserRequest): DeleteUserRequest {

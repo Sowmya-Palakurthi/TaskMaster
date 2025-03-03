@@ -21,8 +21,8 @@ class UserRepositoryImplementation @Inject constructor(
 
     override suspend fun getUser(userId: Int): UserResponse? {
         val cachedUser = redisCache.getUserData(userId)
-        if (cachedUser != null) return cachedUser
-
+        if (cachedUser != null)
+        {    return cachedUser}
         val userFromDb = userDb.getUserFromDb(userId)
         val userJson = Json.encodeToString(userFromDb)
         userFromDb?.let {

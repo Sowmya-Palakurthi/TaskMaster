@@ -1,8 +1,7 @@
-package usecases
+package `in`.porter.taskmaster.api.service.usecases
 
-import Mappers.RequestMapper
-import `in`.porter.taskmaster.api.models.Entities.ApiTaskEntities.UpdateApiTaskStatusRequest
 import `in`.porter.taskmaster.api.models.Entities.ApiUserEntities.UpdateApiPasswordRequest
+import `in`.porter.taskmaster.api.service.RequestMapper
 import `in`.porter.taskmaster.domain.usecases.UpdatePasswordService
 import javax.inject.Inject
 
@@ -12,9 +11,9 @@ class UpdateUser @Inject constructor(
 
 ) {
 
-    suspend fun invoke(apiModel: UpdateApiPasswordRequest) {
+    suspend fun invoke(apiModel: UpdateApiPasswordRequest):String {
         val domainTask = userMapper.toDomain(apiModel)
-        updateUserService.invoke(domainTask)
+        return updateUserService.invoke(domainTask)
     }
 
 

@@ -53,6 +53,7 @@ subprojects {
   dependencies {
     "implementation"(Libs.KotlinUtils.commons)
     "testImplementation"(Libs.KotlinUtils.testing)
+
   }
 
   // Configure Jacoco for subprojects

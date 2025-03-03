@@ -16,12 +16,15 @@ class UserRedisService @Inject constructor(private val jedis: Jedis) : UserRedis
 
     override fun getUserData(uid: Int): UserResponse? {
         return try {
-            jedis.get("user:$uid")?.let { Json.decodeFromString<UserResponse>(it) }
+            val data = jedis.get("user:$uid")
+            logger.info("Fetched from Redis: $data") // Debug log
+            data?.let { Json.decodeFromString<UserResponse>(it) }
         } catch (e: Exception) {
             logger.error("Error fetching user data from cache for ID $uid: ${e.localizedMessage}", e)
             null
         }
     }
+
 
     override fun deleteUserData(uid: Int): Boolean {
         return try {

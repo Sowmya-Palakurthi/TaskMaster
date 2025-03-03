@@ -2,6 +2,7 @@ package `in`.porter.taskmaster.data.DatabaseRepository
 
 
 
+import `in`.porter.taskmaster.data.RedisRepository.UserRedisService
 import `in`.porter.taskmaster.domain.DbInterfaces.UserDbActions
 import `in`.porter.taskmaster.domain.Entities.TaskEntities.TaskEntity
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UpdatePasswordRequest
@@ -9,24 +10,29 @@ import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserEntity.users.uid
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserRequest
 import `in`.porter.taskmaster.domain.Entities.UserEntities.UserResponse
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import javax.inject.Inject
 
 class UserDbImplementation @Inject constructor() : UserDbActions {
+    private val logger: Logger = LogManager.getLogger(UserDbImplementation::class.java)
 
     override suspend fun getUserFromDb(userId: Int): UserResponse? {
-        return transaction {
+        val user = transaction {
             UserEntity.users.select { uid eq userId }
                 .singleOrNull()?.let {
                     UserResponse(
                         uid = it[uid],
-                        username = it[UserEntity.users.username],
-
+                        username = it[UserEntity.users.username]
                     )
                 }
         }
+        logger.info("Fetched user from DB: $user") // Debug log
+        return user
     }
+
 
     override suspend fun addUserInDb(request: UserRequest): Boolean {
 
@@ -40,27 +46,12 @@ class UserDbImplementation @Inject constructor() : UserDbActions {
         }
     }
 
-//    override suspend fun deleteUserFromDb(userId: Int,password: String): Boolean {
-//        return transaction {
-//            val user = UserEntity.users.select { uid eq userId }.singleOrNull()
-//            if (user != null && user[UserEntity.users.password] == password) {
-//                val deletedRows = UserEntity.users.deleteWhere { uid eq uid }
-//                val deletedTasks=TaskEntity.tasks.deleteWhere { TaskEntity.tasks.uid eq userId }
-//                deletedRows > 0
-//            } else {
-//                false
-//            }
-//        }
-//    }
-
     override suspend fun deleteUserFromDb(userId: Int, password: String): Boolean {
         return transaction {
             val user = UserEntity.users.select { uid eq userId }.singleOrNull()
             if (user != null && user[UserEntity.users.password] == password) {
-                // Delete tasks associated with the user
                 TaskEntity.tasks.deleteWhere { TaskEntity.tasks.uid eq userId }
 
-                // Delete the user
                 val deletedRows = UserEntity.users.deleteWhere { uid eq userId }
                 deletedRows > 0
             } else {
