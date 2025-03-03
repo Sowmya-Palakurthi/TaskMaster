@@ -6,17 +6,21 @@ plugins {
   id(Plugins.fatJarPlugin).version(Plugins.fatJarPluginVersion)
   id(Plugins.kotlinKapt)
 }
+//newly added
+
+
 
 val env = project.properties["env"] as String? ?: "dev"
 
 dependencies {
-  implementation(project(Modules.KPTR.domain))
-  implementation(project(Modules.KPTR.Data.psql))
-  implementation(project(Modules.KPTR.Api.service))
-  implementation(project(Modules.KPTR.Api.models))
+  implementation(project(Modules.TASKMASTER.domain))
+  implementation(project(Modules.TASKMASTER.Data.psql))
+  implementation(project(Modules.TASKMASTER.Api.service))
+  implementation(project(Modules.TASKMASTER.Api.models))
   implementation(project(Modules.Servers.commons))
   implementation(project(Modules.Servers.client))
 
+  implementation("redis.clients:jedis:5.1.0")
 
 
   implementation(Libs.KotlinUtils.serdeJackson)
@@ -83,5 +87,5 @@ tasks {
 }
 
 application {
-  mainClass.set("in.porter.kptr.servers.ktor.external.app.MainRunnerKt")
+  mainClass.set("in.porter.taskmaster.servers.ktor.external.app.MainRunnerKt")
 }

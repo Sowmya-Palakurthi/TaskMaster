@@ -10,22 +10,22 @@ plugins {
 val env = project.properties["env"] as String? ?: "dev"
 
 dependencies {
-  implementation(project(Modules.KPTR.domain))
-  implementation(project(Modules.KPTR.Data.psql))
-  implementation(project(Modules.KPTR.Api.service))
-  implementation(project(Modules.KPTR.Api.models))
+  implementation(project(Modules.TASKMASTER.domain))
+  implementation(project(Modules.TASKMASTER.Data.psql))
+  implementation(project(Modules.TASKMASTER.Api.service))
+  implementation(project(Modules.TASKMASTER.Api.models))
   implementation(project(Modules.Servers.commons))
+  implementation ("com.google.code.gson:gson:2.8.8")
   implementation(project(Modules.Servers.client))
-
-
+  implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
+  implementation("io.ktor:ktor-server-content-negotiation:2.3.5")
   implementation(Libs.KotlinUtils.serdeJackson)
   implementation(Libs.KotlinUtils.sentryKtorFeature)
   implementation(Libs.KotlinUtils.ktorWebServer)
-
-
+  kapt("com.google.dagger:dagger-compiler:2.50")
+  implementation("redis.clients:jedis:5.1.0")
   implementation(Libs.Log4j.core)
   implementation(Libs.Log4j.slf4jImpl)
-
   implementation(Libs.Ktor.serverCore)
   implementation(Libs.Ktor.serverNetty)
   implementation(Libs.Ktor.serverJackson)
@@ -85,5 +85,5 @@ tasks {
 }
 
 application {
-  mainClass.set("in.porter.kptr.servers.ktor.app.MainRunnerKt")
+  mainClass.set("in.porter.taskmaster.servers.ktor.app.MainRunnerKt")
 }

@@ -14,11 +14,18 @@ allprojects {
   apply(plugin = Plugins.Detekt.detektLib)
   apply(plugin = Plugins.mavenS3)
 
+//  detekt {
+//    toolVersion = Plugins.Detekt.version
+//    config = files("$rootDir/config/detekt/detekt.yml")
+//    buildUponDefaultConfig = false
+//  }
   detekt {
     toolVersion = Plugins.Detekt.version
-    config = files("$rootDir/config/detekt/detekt.yml")
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml")) // Updated line
     buildUponDefaultConfig = false
   }
+
+
 
   repositories {
     mavenCentral()
@@ -37,7 +44,7 @@ allprojects {
 }
 
 subprojects {
-  group = "in.porter.kptr"
+  group = "in.porter.taskmaster"
   version = "0.1.0"
 
   apply(plugin = Plugins.kotlinJvm)
@@ -46,6 +53,7 @@ subprojects {
   dependencies {
     "implementation"(Libs.KotlinUtils.commons)
     "testImplementation"(Libs.KotlinUtils.testing)
+
   }
 
   // Configure Jacoco for subprojects
@@ -66,6 +74,7 @@ subprojects {
       xml.required.set(true)
     }
   }
-
   kotlinExtension.jvmToolchain(11)
 }
+
+

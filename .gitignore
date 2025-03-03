@@ -203,3 +203,58 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 build
+
+
+# IntelliJ IDEA project files
+.idea/
+
+# macOS system files
+
+# Gradle build output
+
+# Kotlin specific files
+*.kotlin_metadata
+
+# Log files
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+
+# JetBrains Rider
+*.sln.iml
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Eclipse
+.project
+.classpath
+.cproject
+.settings/

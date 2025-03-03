@@ -1,11 +1,12 @@
 object Modules {
 
-  object KPTR {
-    const val domain = ":domain"
+  object TASKMASTER {
 
+
+    const val domain = ":domain"
+    const val client = ":client"
     object Data {
       private const val data = ":data"
-
       const val psql = "$data-psql"
     }
 
@@ -21,6 +22,7 @@ object Modules {
   object Servers {
     const val commons = ":server-commons"
     const val client = ":client"
+
   }
 
 
